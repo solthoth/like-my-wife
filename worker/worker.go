@@ -1,12 +1,11 @@
 package worker
 
 import (
-	"log"
-
 	"github.com/solthoth/like-my-wife/configuration"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func Work(config *configuration.Configurations)  {
-	var wife = config.SocialMediaIdentifier.Instagram
-	log.Printf("Hello %s\n", wife)
+	wife := config.SocialMediaIdentifier.Instagram
+	jww.INFO.Printf("Hello %s\n", wife)
 }

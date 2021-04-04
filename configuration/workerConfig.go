@@ -2,9 +2,9 @@ package configuration
 
 import (
 	"fmt"
-	"log"
 	"time"
 
+	jww "github.com/spf13/jwalterweatherman"
 	"github.com/spf13/viper"
 )
 
@@ -21,30 +21,25 @@ type SocialMediaIdentifierConfigurations struct {
 	Instagram string
 }
 
+type LoggingConfigurations struct {
+	LogLevel string
+}
+
 func Init(appName string) *Configurations {
-	Configure(appName)
+	LoadConfig(appName, ".")
+	LoadConfig(fmt.Sprintf(".%s",appName), "$HOME")
 	return Build()
 }
 
-func Configure(appName string)  {
-	log := log.Default()
-	viper.SetConfigName(appName)
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
-	viper.SetConfigType("yaml")
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Unable to decode into struct, %v\n", err)
+func LoadConfig(appName string, path string) {
+	v := viper.New()
+	v.SetConfigType("yaml")
+	v.SetConfigName(appName)
+	v.AddConfigPath(path)
+	if err := v.ReadInConfig(); err != nil {
+		jww.ERROR.Printf("Unable to decode into struct, %v\n", err)
 	}
-	
-	LoadConfig(fmt.Sprintf("~/.%s", appName))
-}
-
-func LoadConfig(path string) {
-	log := log.Default()
-	viper.AddConfigPath(path)
-	if err := viper.MergeInConfig(); err != nil {
-		log.Fatalf("Unable to decode into struct, %v\n", err)
-	}
+	viper.MergeConfigMap(v.AllSettings())
 }
 
 func Build() *Configurations {

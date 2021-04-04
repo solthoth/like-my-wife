@@ -1,5 +1,8 @@
 workerContext:
   WaitTime: 5
 
-socialMediaIdentifiers:
-  instagram: ""
+socialMediaIdentifier:
+  instagram: "@ccbjr"
+
+Logging:
+  LogLevel: "Info"
